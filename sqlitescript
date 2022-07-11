@@ -1,0 +1,9 @@
+
+CREATE TABLE if not exists house (
+    name text primary key,
+    sigil text not null,
+    words text not null
+);
+
+insert into house values ("Stark", "Dire Wolf", "Winter is Coming");
+insert into house values ("Targaryen", "dragon", "fire and blood");

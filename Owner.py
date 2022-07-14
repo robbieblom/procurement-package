@@ -1,3 +1,5 @@
+import sqlite3
+import csv
 
 class Owner:
     """The Owner class should have one class attribute db (initialized as None) which will represent a
@@ -21,6 +23,44 @@ class Owner:
         self.money = money
         self.inventory_dict = inventory_dict
 
+
+    @classmethod
+    def create_db(cls, file_name):
+        """Creates a local SQLite database using the sqlite3 module and then creates a table called
+        Inventory in the database. There will be three columns: item_name, Price, and Quantity. 
+        The composite key of the table will be (item_name, value).
+        Price and Quantity will both be stored as integers in the database.
+
+        Parameters:
+        file_name: String -- the name of the csv file that contains the inventory
+
+        Return:
+        a connection the the created database
+        """
+        db = sqlite3.connect("Inventory.db")
+        curs = db.cursor()
+        csvin = csv.reader(open(file_name))
+        curs.execute('''CREATE TABLE if not exists Inventory (
+                    'Item Name' text check('Item Name' != ""),
+                    Value Integer not null,
+                    Quantity Integer not null,
+                    primary key ('Item Name', Value)
+                    ); ''')
+        for i, row in enumerate(csvin):
+            if i == 0:
+                continue
+            curs.execute('''insert into Inventory values (?,?,?);''', tuple(row))
+        curs.execute("select * from Inventory")
+        db.commit()
+        Owner.db = db
+
+    @classmethod
+    def drop_db(cls):
+        curs = Owner.db.cursor()
+        curs.execute('''drop table Inventory''')
+        curs.close()
+        Owner.db.close()
+        
 
     def buy_cheapest(self, item_name = None):
         """Buys the cheapest item with the specified item_name, and if no item_name is specified,

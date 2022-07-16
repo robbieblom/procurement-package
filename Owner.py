@@ -153,14 +153,14 @@ class Owner:
 
 
     def execute_buy(self, item):
-        item_name, price = (item[0], .95*item[1])
+        item_name, value = (item[0], item[1])
 
         #update owner's stuff
-        self.money = self.money - .95*item[1]
+        self.money = self.money - .95*value
         if( (item[0], .95*item[1]) ) in self.inventory_dict:
-            self.inventory_dict[ (item_name, price) ] += 1
+            self.inventory_dict[ (item_name, value) ] += 1
         else:
-            self.inventory_dict[ (item_name, price) ] = 1
+            self.inventory_dict[ (item_name, value) ] = 1
 
         #update database
         self.dbHandler.execute_buy(item)

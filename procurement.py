@@ -15,7 +15,11 @@ def main():
     print("Hello! Welcome to the procurement simulation.")
     next = True
     while(next == True):
-        next = actionsPrompt.ask_action()
+        try:
+            next = actionsPrompt.ask_action()
+        except:
+            print("Something went wrong")
+            break
     Owner.drop_db()
 
 

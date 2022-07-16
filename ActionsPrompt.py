@@ -65,7 +65,7 @@ class ActionsPrompt():
                 'type': 'list',
                 'name': 'which_item(s)',
                 'message': 'Which item(s) do you want to buy?',
-                'choices': items + ['One of whatever\'s cheapest', 'As many units of inventory as possible', 'Quit']
+                'choices': items + ['One of whatever\'s cheapest', 'As many units of the cheapest item as possible', 'Quit']
             }
         ]
         items_answer = prompt(which_items_prompt)
@@ -73,17 +73,14 @@ class ActionsPrompt():
 
         if(item_name == "One of whatever\'s cheapest"):
             self.owners[owner_name].buy_cheapest()
-            print("You just bought the cheapest item.\n")
             return True
-        elif(item_name == "As many units of inventory as possible"):
+        elif(item_name == "As many units of the cheapest item as possible"):
             self.owners[owner_name].buy_all()
-            print("You just bought all that is possible.\n")
             return True
         elif(item_name == "Quit"):
             return False
         else:
             self.owners[owner_name].buy_cheapest(item_name)
-            print("You just bought one", item_name + ".\n")
             return True
 
     def sell_inventory(self):
@@ -104,24 +101,20 @@ class ActionsPrompt():
 
         if(item_name == "One of whatever has the highest price"):
             self.owners[owner_name].sell_item()
-            print("You just sold one unit of", owner_name + '\'s most expensive item.\n')
             return True
         elif(item_name == "All of it"):
             self.owners[owner_name].fire_sale()
-            print("You just sold everything.\n")
             return True
         elif(item_name == "Quit"):
             return False
         else:
             self.owners[owner_name].sell_item(item_name)
-            print("You just sold one unit of", item_name + '.\n')
             return True
 
     def check_net_worth(self):
         owner_name = self.which_owner() 
         if(not owner_name): return False
-
-        print("The net worth of", owner_name, "is", str(self.owners[owner_name].net_worth()) + ".\n")
+        self.owners[owner_name].net_worth()
         return True
 
     def which_owner(self):

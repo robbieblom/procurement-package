@@ -1,10 +1,9 @@
-import sqlite3
-import csv
+from DatabaseHandler import DatabaseHandler
 
 class Owner:
     db = None
 
-    def __init__(self, name, money = 500.0, inventory_dict = {}):
+    def __init__(self, name, money=400, inventory_dict={}):
         """money and inventory_dict have initital default values, but any other money amount can be
         passed in to the init method
 
@@ -18,45 +17,8 @@ class Owner:
         self.name = name
         self.money = money
         self.inventory_dict = inventory_dict
+        self.dbHandler = DatabaseHandler()
 
-
-    @classmethod
-    def create_db(cls, file_name):
-        """Creates a local SQLite database using the sqlite3 module and then creates a table called
-        Inventory in the database. There will be three columns: item_name, Price, and Quantity. 
-        The composite key of the table will be (item_name, value).
-        Price and Quantity will both be stored as integers in the database.
-
-        Parameters:
-        file_name: String -- the name of the csv file that contains the inventory
-        
-        Return:
-        None
-        """
-        db = sqlite3.connect("Inventory.db")
-        curs = db.cursor()
-        csvin = csv.reader(open(file_name))
-        curs.execute('''CREATE TABLE if not exists Inventory (
-                    'Item Name' text check('Item Name' != ""),
-                    Value Integer not null,
-                    Quantity Integer not null,
-                    primary key ('Item Name', Value)
-                    ); ''')
-        for i, row in enumerate(csvin):
-            if i == 0:
-                continue
-            curs.execute('''insert into Inventory values (?,?,?);''', tuple(row))
-        curs.execute("select * from Inventory")
-        db.commit()
-        Owner.db = db
-
-    @classmethod
-    def drop_db(cls):
-        curs = Owner.db.cursor()
-        curs.execute('''drop table Inventory''')
-        curs.close()
-        Owner.db.close()
-        
 
     def buy_cheapest(self, item_name = None):
         """Buys the cheapest item with the specified item_name, and if no item_name is specified,
@@ -70,68 +32,25 @@ class Owner:
         Return:
         None
         """
-        curs = Owner.db.cursor()
-        if item_name != None:
-
-            #find cheapest value
-            curs.execute('''select "Item Name", Value, Quantity from Inventory where "Item Name"
-                == ?''', (item_name,))
-            candidates = curs.fetchall()
-            name = sorted(candidates, key = lambda x: x[1])[0][0]
-            value = sorted(candidates, key = lambda x: x[1])[0][1]
-            quantity = sorted(candidates, key = lambda x: x[1])[0][2]
-            price = round(.95*value, 2)
-
-            #can the owner buy it?
-            if price > self.money:
-                print("You don't have enough money to buy that.\n")
+        
+        if(item_name):
+            cheapest_item = self.dbHandler.get_cheapest_item(item_name)
+            if(self.can_afford(cheapest_item)):
+                self.execute_buy(cheapest_item)
+                print("You just bought one", cheapest_item[0] + ".\n")
                 return
             else:
-                #update owner's stuff
-                self.money = self.money - price
-                if (name, price) in self.inventory_dict:
-                    self.inventory_dict[(name, price)] += 1
-                else:
-                    self.inventory_dict[(name, price)] = 1
-
-                #update database
-                if quantity > 1:
-                    curs.execute('''update Inventory set Quantity = Quantity - 1 where "Item Name" = ?
-                        and Value = ?''', (item_name,value))
-                    Owner.db.commit()
-                else:
-                    curs.execute('''delete from Inventory where "Item Name" = ?
-                        and Value = ?''', (item_name,value))
-                    Owner.db.commit()
-                print("You just bought one ", item_name + ".\n")
+                print("You don't have enough money to buy another one of these.\n")
+                return    
         else:
-            #find cheapest item
-            curs.execute(''' select "Item Name", MIN(Value), Quantity from Inventory''')
-            item = curs.fetchone()
-
-            #can the owner buy it?
-            price = round(.95*item[1], 2)
-            if price > self.money:
+            cheapest_item_of_all = self.dbHandler.get_cheapest_item()
+            if(self.can_afford(cheapest_item_of_all)):
+                self.execute_buy(cheapest_item_of_all)
+                print("You just bought one", cheapest_item_of_all[0] + ".\n")
+                return
+            else:
                 print("You don't have enough money to buy anything.\n")
                 return
-            else:
-                #update owner's stuff
-                self.money = self.money - price
-                if (item[0], price) in self.inventory_dict:
-                    self.inventory_dict[(item[0], price)] += 1
-                else:
-                    self.inventory_dict[(item[0], price)] = 1
-
-                #update database
-                if item[2] > 1:
-                    curs.execute('''update Inventory set Quantity = Quantity - 1 where "Item Name" = ?
-                        and Value = ?''', (item[0],item[1]))
-                    Owner.db.commit()
-                else:
-                    curs.execute('''delete from Inventory where "Item Name" = ?
-                        and Value = ?''', (item[0],item[1]))
-                    Owner.db.commit()
-                print("You just bought one", item[0] + ".\n")
 
 
     def sell_item(self, item_name = None):
@@ -147,101 +66,24 @@ class Owner:
         Return:
         None
         """
-        curs = Owner.db.cursor()
-        if item_name != None:
-            #check if item_name is in inventory_dict
-            val = False
-            for item in self.inventory_dict:
-                if item[0] == item_name:
-                    val = True
-                    break
-
-            #not in inventory_dict
-            if val == False:
+        if(item_name):
+            if(self.has_item(item_name)):
+                highest_value_item = self.get_highest_value_item(item_name)
+                self.execute_sell(highest_value_item)
+                print("You just sold one unit of", item_name + ".\n")
+                return
+            else:
                 print("You don't have that item to sell.\n")
                 return
-
-            #in inventory_dict
-            else:
-                #select the inventory with highest value
-                maximum = (-1,-1)
-                for item in self.inventory_dict:
-                    if item[0] == item_name:
-                        if item[1] > maximum[1]:
-                            maximum = item
-
-                #update inventory_dict
-                if self.inventory_dict[maximum] > 1:
-                    self.inventory_dict[maximum] -= 1
-                else:
-                    del self.inventory_dict[maximum]
-
-                #increase money by 105% of price
-                self.money += 1.05*maximum[1]
-
-                soldMaximum = (maximum[0], 1.05*maximum[1])
-                #update database
-                curs.execute('''select "Item Name", Value from Inventory where
-                    "Item Name" = ? and Value = ?''',soldMaximum)
-                check = curs.fetchone()
-
-                #if soldMaximum in the database
-                if check != None:
-                    curs.execute('''update Inventory set Quantity = Quantity + 1 where
-                        "Item Name" = ? and Value = ?''', soldMaximum)
-                    Owner.db.commit()
-
-                #if soldMaximum not in the database
-                else:
-                    row = soldMaximum + (1,)
-                    curs.execute('''insert into Inventory ("Item Name",Value,Quantity)
-                        values (?,?,?)''', row)
-                    Owner.db.commit()
-                
-                print("You just sold one unit of", item_name + ".\n")
-
         else:
-            if len(self.inventory_dict) == 0:
+            if(self.has_inventory()):
+                highest_value_item = self.get_highest_value_item()
+                self.execute_sell(highest_value_item)
+                print("You just sold one unit of", highest_value_item[0] + ".\n")
+                return
+            else:
                 print(self.name, "doesn't have any inventory.\n")
                 return
-
-            #find most expensive item
-            maximum = (-1,-1)
-            for item in self.inventory_dict:
-                if item[1] > maximum[1]:
-                    maximum = item
-
-            #update inventory_dict
-            if self.inventory_dict[maximum] > 1:
-                self.inventory_dict[maximum] -= 1
-            else:
-                del self.inventory_dict[maximum]
-
-            #update money
-            self.money += 1.05*maximum[1]
-
-            soldMaximum = (maximum[0], 1.05*maximum[1])
-            #update database
-            curs.execute('''select "Item Name", Value from Inventory where
-                "Item Name" = ? and Value = ?''',soldMaximum)
-            check = curs.fetchone()
-
-            #if soldMaximum in the database
-            if check != None:
-                curs.execute('''update Inventory set Quantity = Quantity + 1 where
-                    "Item Name" = ? and Value = ?''', soldMaximum)
-                Owner.db.commit()
-
-            #if soldMaximum not in the database
-            else:
-                row = soldMaximum + (1,)
-                curs.execute('''insert into Inventory ("Item Name",Value,Quantity)
-                    values (?,?,?)''', row)
-                Owner.db.commit()
-
-            print("You just sold one unit of", maximum[0] + ".\n")
-
-
 
 
     def fire_sale(self):
@@ -254,30 +96,11 @@ class Owner:
         Return:
         None
         """
-        curs = Owner.db.cursor()
-        if len(self.inventory_dict) == 0:
-            print(self.name, "doesn't have any inventory.\n")
-        else:
-            for item in self.inventory_dict:
-                #is item in Inventory?
-                curs.execute('''select "Item Name", "Value" from Inventory where
-                    "Item Name" = ? and Value = ?''', item)
-                check = curs.fetchone()
-
-                #item in Inventory
-                if check != None:
-                    curs.execute('''update Inventory set Quantity = Quantity + ? where
-                        "Item Name" = ? and Value = ?''', (self.inventory_dict[item],) + item)
-                    Owner.db.commit()
-                    self.money += .8*item[1]*self.inventory_dict[item]
-                #item not in Inventory
-                else:
-                    curs.execute('''insert into Inventory ("Item Name", Value, Quantity)
-                        values (?,?,?)''', item + (self.inventory_dict[item],))
-                    Owner.db.commit()
-                    self.money += .8*item[1]*self.inventory_dict[item]
-            self.inventory_dict = {}
+        if(self.has_inventory()):
+            self.execute_fire_sell()
             print("You just sold everything.\n")
+        else:
+            print(self.name, "doesn't have any inventory.\n")
 
 
     def net_worth(self):
@@ -310,86 +133,88 @@ class Owner:
         Return:
         None
         """
-        curs = Owner.db.cursor()
-        if item_name != None:
-            #is item_name in Inventory?
-            curs.execute('''select "Item Name", Value, Quantity from Inventory where
-                "Item Name" = ?''', (item_name,))
-            items = curs.fetchall()
-
-            if items == []:
-                print("That item does not exist.\n")
-                return
-            else:
-                for inv in sorted(items, key = lambda x: x[1]):
-                    for i, purchase in enumerate( list(range(1,inv[2]+1)) ):
-                        if self.money <= 0 or self.money - round(.95*inv[1],2) <= 0:
-                            print("Item:", inv[0] + ".", "Number bought:", str(i) + ".")
-                            print("You couldn't buy all of the item because you didn't have enough money.\n")
-                            return
-                        cost = round(.95*inv[1],2)
-                        self.money -= cost
-
-                        #update inventory_dict
-                        if (inv[0], cost) in self.inventory_dict:
-                            self.inventory_dict[(inv[0], cost)] += 1
-                        else:
-                            self.inventory_dict[(inv[0], cost)] = 1
-
-                        #update Inventory
-                        if purchase < inv[2]:
-                            curs.execute('''update Inventory set Quantity = Quantity - 1
-                                where "Item Name" = ? and Value = ?''', inv[:2])
-                            Owner.db.commit()
-                        else:
-                            curs.execute('''delete from Inventory where "Item Name" = ? and
-                                Value = ?''', inv[:2])
-                            Owner.db.commit()
-
-                        print("Item:", inv[0] + ".", "Number bought:", str(i) + ".\n")
-
+        if(item_name):
+            # note that there will always be at least one item
+            # in db because of ActionsPrompt
+            while(self.dbHandler.get_cheapest_item(item_name)):
+                self.buy_cheapest(item_name)
         else:
-            curs.execute(''' select "Item Name", Value, Quantity from Inventory''')
-            table = curs.fetchall()
-            sumDict = {}
-            tableDict = {}
-            for element in table:
-                tableDict[(element[0], element[1])] = element[2]
-            for key in tableDict:
-                if key[0] in sumDict:
-                    sumDict[key[0]] += key[1]*tableDict[key]
-                else:
-                    sumDict[key[0]] = key[1]*tableDict[key]
+            cheapest_item_of_all = self.dbHandler.get_cheapest_item()
+            while(self.dbHandler.get_cheapest_item(cheapest_item_of_all[0])):
+                self.buy_cheapest(item_name)
 
-            #find the min value of sumDict
-            minClass = min(list(sumDict.items()), key = lambda x: x[1])[0]
-            curs.execute('''select "Item Name", value, Quantity from Inventory
-                where "Item Name" = ?''', (minClass,))
-            items = curs.fetchall()
 
-            for inv in sorted(items, key = lambda x: x[1]):
-                for i, purchase in enumerate( list(range(1,inv[2]+1)) ):
-                    if self.money <= 0 or self.money - round(.95*inv[1],2) <= 0:
-                        print("Item:", inv[0] + ".", "Number bought:", str(i) + ".")
-                        print("You couldn't buy everything because you didn't have enough money.\n")
-                        return
-                    cost = round(.95*inv[1],2)
-                    self.money -= cost
+    def can_afford(self, item):
+        price = .95*item[1]
+        if(self.money > price):
+            return True
+        else:
+            return False
 
-                    #update inventory_dict
-                    if (inv[0], cost) in self.inventory_dict:
-                        self.inventory_dict[(inv[0], cost)] += 1
-                    else:
-                        self.inventory_dict[(inv[0], cost)] = 1
 
-                    #update Inventory
-                    if purchase < inv[2]:
-                        curs.execute('''update Inventory set Quantity = Quantity - 1
-                            where "Item Name" = ? and Value = ?''', inv[:2])
-                        Owner.db.commit()
-                    else:
-                        curs.execute('''delete from Inventory where "Item Name" = ? and
-                            Value = ?''', inv[:2])
-                        Owner.db.commit()
+    def execute_buy(self, item):
+        item_name, price = (item[0], .95*item[1])
 
-                    print("Item:", inv[0] + ".", "Number bought:", str(i) + ".\n")
+        #update owner's stuff
+        self.money = self.money - .95*item[1]
+        if( (item[0], .95*item[1]) ) in self.inventory_dict:
+            self.inventory_dict[ (item_name, price) ] += 1
+        else:
+            self.inventory_dict[ (item_name, price) ] = 1
+
+        #update database
+        self.dbHandler.execute_buy(item)
+
+
+    def has_item(self, item_name):
+        for item in self.inventory_dict:
+            if item[0] == item_name:
+                return True
+        return False
+
+
+    def get_highest_value_item(self, item_name = None):
+        """ If item_name is given then find most expensive of the given item.
+            Otherwise, find the most expensive item across all items
+        """
+        highest_value_item = (-1,-1, -1)
+        if(item_name):
+            for item in self.inventory_dict:
+                if(item[0] == item_name and item[1] > highest_value_item[1]) :
+                    highest_value_item = item
+        else:
+            for item in self.inventory_dict:
+                if(item[1] > highest_value_item[1]):
+                    highest_value_item = item
+
+        return [highest_value_item[0], highest_value_item[1] ]
+
+
+    def execute_sell(self, item):
+        item_name, value = [ item[0], item[1] ]
+
+        #update inventory_dict
+        if self.inventory_dict[(item_name, value)] > 1:
+            self.inventory_dict[(item_name, value)] -= 1
+        else:
+            del self.inventory_dict[(item_name, value)]
+
+        #increase money by 105% of value
+        self.money += 1.05*value
+
+        self.dbHandler.execute_sell(item)
+
+
+    def execute_fire_sell(self):
+        for item in self.inventory_dict:
+            value = item[1]
+            self.money += .8*value
+            self.dbHandler.execute_sell(item)
+
+        self.inventory_dict = {}
+        
+
+
+
+    def has_inventory(self):
+        return len(self.inventory_dict) != 0

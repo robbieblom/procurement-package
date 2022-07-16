@@ -1,5 +1,6 @@
 from ActionsPrompt import ActionsPrompt
 from Owner import Owner
+from DatabaseHandler import DatabaseHandler
 
 def main():
     """ First calls create_db to create a local database containing a
@@ -10,17 +11,18 @@ def main():
     When the "What would you like to do next?" prompt appears, the user can either
     "create owner", "buy inventory", "sell inventory", "check net worth", or "quit".
     """
-    Owner.create_db("items.csv")
+    DatabaseHandler.create_db("items.csv")
     actionsPrompt = ActionsPrompt()
     print("Hello! Welcome to the procurement simulation.")
     next = True
     while(next == True):
         try:
             next = actionsPrompt.ask_action()
-        except:
+        except Exception as e:
             print("Something went wrong")
+            # print(e)
             break
-    Owner.drop_db()
+    DatabaseHandler.drop_db()
 
 
 

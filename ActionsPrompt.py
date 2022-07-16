@@ -1,4 +1,5 @@
 from PyInquirer import prompt
+from DatabaseHandler import DatabaseHandler
 from FloatValidator import FloatValidator
 from Owner import Owner
 
@@ -54,11 +55,7 @@ class ActionsPrompt():
         owner_name = self.which_owner() 
         if(not owner_name): return False
 
-        curs = Owner.db.cursor()
-        curs.execute('''select * from Inventory''')
-        items = curs.fetchall()
-        curs.close()
-        items = list( set([ i[0] for i in items] ) )
+        items = DatabaseHandler.get_all_items()
                 
         which_items_prompt = [
             {
@@ -87,7 +84,7 @@ class ActionsPrompt():
         owner_name = self.which_owner() 
         if(not owner_name): return False
 
-        items = [i[0] for i in self.owners[owner_name].inventory_dict]
+        items = list(set([i[0] for i in self.owners[owner_name].inventory_dict]))
         which_items_prompt = [
             {
                 'type': 'list',

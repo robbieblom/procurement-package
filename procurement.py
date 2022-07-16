@@ -1,5 +1,4 @@
 from ActionsPrompt import ActionsPrompt
-from Owner import Owner
 from DatabaseHandler import DatabaseHandler
 
 def main():

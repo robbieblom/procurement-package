@@ -10,6 +10,7 @@ def main():
     When the "What would you like to do next?" prompt appears, the user can either
     "create owner", "buy inventory", "sell inventory", "check net worth", or "quit".
     """
+    DatabaseHandler.drop_db()
     DatabaseHandler.create_db("items.csv")
     actionsPrompt = ActionsPrompt()
     print("Hello! Welcome to the procurement simulation.")

@@ -19,6 +19,7 @@ setup: requirements.txt
 	$(PIP) install -e .
 
 clean:
+	sqlite3 src/procurement_bytetheory/data/ProcurementGame.db < src/procurement_bytetheory/data/schema.sql
 	rm -rf src/procurement_bytetheory/__pycache__
 	rm -rf src/procurement_bytetheory.egg-info/
 	rm -rf dist/
@@ -26,7 +27,7 @@ clean:
 
 build:
 	$(PIP) uninstall procurement_bytetheory -y
-	sqlite3 ProcurementGame.db < schema.sql
+	sqlite3 src/procurement_bytetheory/data/ProcurementGame.db < src/procurement_bytetheory/data/schema.sql
 	$(PYTHON) -m build
 	$(PIP) freeze > requirements.txt
 	$(PIP) install -e .

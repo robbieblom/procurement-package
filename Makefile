@@ -26,6 +26,7 @@ clean:
 
 build:
 	$(PIP) uninstall procurement_bytetheory -y
+	sqlite3 ProcurementGame.db < schema.sql
 	$(PYTHON) -m build
 	$(PIP) freeze > requirements.txt
 	$(PIP) install -e .

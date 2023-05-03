@@ -1,0 +1,8 @@
+{
+  "editor.defaultFormatter": "black",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": false
+    // "source.fixAll.eslint": true,
+  }
+}

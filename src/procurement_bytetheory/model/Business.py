@@ -85,16 +85,18 @@ class Business(Subject):
                 self.executeSale(highestValueItem)
 
     def liquidateInventory(self):
-        """Sells all items in inventory at 80% of their value."""
-        for item in self.inventory:
-            self.collectPayment(item.price)
-            self.removeItemFromInventory
+        for item in self.inventory.items:
+            self.collectPaymentFromMarketCustomer(item.getFireSalePrice())
+        self.clearInventory()
 
     def collectPaymentFromMarketCustomer(self, salesPrice):
         self.money_amount += salesPrice
 
     def removeItemFromInventory(self, item):
         self.inventory.removeItem(item)
+
+    def clearInventory(self):
+        self.inventory.clear()
 
     def executeSale(self, item):
         self.collectPaymentFromMarketCustomer(item.getSalesPrice())

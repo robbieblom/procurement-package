@@ -41,4 +41,5 @@ class UIController(Observer):
         self.business.save()
 
     def liquidateInventory(self):
-        pass
+        self.business.liquidateInventory()
+        self.business.save()

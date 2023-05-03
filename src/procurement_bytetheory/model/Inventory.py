@@ -24,6 +24,11 @@ class Inventory:
         self.items.remove(item)
         item.setInventory(None)
 
+    def clear(self):
+        for item in self.items:
+            item.setInventory(None)
+        self.items = []
+
     def isEmpty(self):
         return not bool(len(self.items))
 

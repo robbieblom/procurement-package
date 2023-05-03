@@ -26,7 +26,7 @@ def main():
     # controller.buyAsManyAsPossible(itemName="desk")
     # controller.sellItem(itemName=None)
     # controller.sellItem(itemName="table")
-    # controller.liquidateInventory()
+    controller.liquidateInventory()
 
 
 if __name__ == "__main__":

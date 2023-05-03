@@ -29,6 +29,9 @@ class Item:
     def getSalesPrice(self):
         return 1.05*self.value
 
+    def getFireSalePrice(self):
+        return .8*self.value
+
     def __eq__(self, other):
         return True if self.id == other.id else False
 

@@ -9,6 +9,7 @@ class MockView:
         else:
             print("Updated with no message.")
 
+
 def main():
     DatabaseHandler.truncateTables()
 
@@ -19,10 +20,12 @@ def main():
     controller.createBusiness("ACME Innovations", 500)
     controller.seedMarket()
     # controller.buyCheapest(itemName=None)
-    # controller.buyCheapest(itemName='desk')
+    controller.buyCheapest(itemName="desk")
+    controller.buyCheapest(itemName="table")
     # controller.buyAsManyAsPossible(itemName=None)
-    controller.buyAsManyAsPossible(itemName='desk')
-    # controller.sellItem()
+    # controller.buyAsManyAsPossible(itemName="desk")
+    # controller.sellItem(itemName=None)
+    # controller.sellItem(itemName="table")
     # controller.liquidateInventory()
 
 

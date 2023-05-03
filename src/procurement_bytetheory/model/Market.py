@@ -1,4 +1,4 @@
-from procurement_bytetheory.db_connectors.DatabaseHandler import DatabaseHandler
+from procurement_bytetheory.db_connectors.MarketDbHandler import MarketDbHandler
 from procurement_bytetheory.model.Item import Item
 from importlib.resources import files
 import csv
@@ -15,7 +15,7 @@ class Market:
         Market.numMarkets += 1
 
         self.items = items if items else [] # [item1, item2, ...]
-        self.dbHandler = dbHandler if dbHandler else DatabaseHandler()
+        self.dbHandler = dbHandler if dbHandler else MarketDbHandler()
 
     def save(self):
         self.dbHandler.saveMarket(self)

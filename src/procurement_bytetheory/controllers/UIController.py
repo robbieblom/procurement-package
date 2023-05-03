@@ -36,8 +36,9 @@ class UIController(Observer):
         self.business.buyAsManyAsPossible(itemName)
         self.business.save()
 
-    def sellItem(self):
-        pass
+    def sellItem(self, itemName=None):
+        self.business.sellItem(itemName)
+        self.business.save()
 
     def liquidateInventory(self):
         pass

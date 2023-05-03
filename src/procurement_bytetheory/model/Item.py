@@ -1,4 +1,4 @@
-from procurement_bytetheory.db_connectors.DatabaseHandler import DatabaseHandler
+from procurement_bytetheory.db_connectors.ItemDbHandler import ItemDbHandler
 
 class Item:
     itemCount = 0
@@ -12,7 +12,7 @@ class Item:
         
         self.market = market
         self.inventory = inventory
-        self.dbHandler = dbHandler if dbHandler else DatabaseHandler()
+        self.dbHandler = dbHandler if dbHandler else ItemDbHandler()
 
     def save(self):
         self.dbHandler.saveItem(self)
@@ -20,8 +20,14 @@ class Item:
     def setMarket(self, market):
         self.market = market
 
-    def getPrice(self):
+    def setInventory(self, inventory):
+        self.inventory = inventory
+
+    def getPurchasePrice(self):
         return .95*self.value
+
+    def getSalesPrice(self):
+        return 1.05*self.value
 
     def __eq__(self, other):
         return True if self.id == other.id else False

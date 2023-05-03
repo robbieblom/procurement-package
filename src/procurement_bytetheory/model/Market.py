@@ -46,8 +46,15 @@ class Market:
         self.items.remove(item)
         item.setMarket(None)
 
+    def hasItem(self, itemName):
+        return itemName in [item.name for item in self.items]
+
     def getCheapestItemByName(self, itemName):
-        return min([item.value for item in self.items if item.name == itemName])
+        if(self.items):
+            return min([item for item in self.items if item.name == itemName])
+        return None
 
     def getCheapestItemInMarket(self):
-        return min(self.items)
+        if(self.items):
+            return min(self.items)
+        return None

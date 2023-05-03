@@ -18,8 +18,10 @@ def main():
 
     controller.createBusiness("ACME Innovations", 500)
     controller.seedMarket()
-    controller.buyCheapest(itemName=None)
-    # controller.buyAll()
+    # controller.buyCheapest(itemName=None)
+    # controller.buyCheapest(itemName='desk')
+    # controller.buyAsManyAsPossible(itemName=None)
+    controller.buyAsManyAsPossible(itemName='desk')
     # controller.sellItem()
     # controller.liquidateInventory()
 

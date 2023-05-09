@@ -43,3 +43,6 @@ class UIController(Observer):
     def liquidateInventory(self):
         self.business.liquidateInventory()
         self.business.save()
+    
+    def getNetWorth(self):
+        return self.business.getNetWorth()

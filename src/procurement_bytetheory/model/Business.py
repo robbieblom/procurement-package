@@ -2,7 +2,7 @@ from procurement_bytetheory.model.Market import Market
 from procurement_bytetheory.db_connectors.BusinessDbHandler import BusinessDbHandler
 from procurement_bytetheory.model.Subject import Subject
 from procurement_bytetheory.model.Inventory import Inventory
-
+import json
 
 class Business(Subject):
     numBusinesses = 0
@@ -22,6 +22,18 @@ class Business(Subject):
 
     def save(self):
         self.dbHandler.saveBusiness(self)
+    
+    def getDictionaryRepresentation(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "moneyAmount": self.money_amount,
+            "inventory": self.inventory.getDictionaryRepresentation(),
+            "market": self.market.getDictionaryRepresentation()
+        }
+
+    def serializeToJson(self):
+        return json.dumps(self.getDictionaryRepresentation())
 
     def buyCheapest(self, itemName=None):
         """Buys the cheapest item with the specified itemName, and if no itemName is specified,

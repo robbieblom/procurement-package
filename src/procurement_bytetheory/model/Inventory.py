@@ -1,5 +1,5 @@
 from procurement_bytetheory.db_connectors.InventoryDbHandler import InventoryDbHandler
-
+import json
 
 class Inventory:
     numInventories = 0
@@ -15,6 +15,16 @@ class Inventory:
 
     def save(self):
         self.dbHandler.saveInventory(self)
+
+    def getDictionaryRepresentation(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "items": [item.getDictionaryRepresentation() for item in self.items]
+        }
+
+    def serializeToJson(self):
+        return json.dumps(self.getDictionaryRepresentation())
 
     def addItem(self, item):
         self.items.append(item)

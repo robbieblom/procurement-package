@@ -1,4 +1,5 @@
 from procurement_bytetheory.db_connectors.ItemDbHandler import ItemDbHandler
+import json
 
 class Item:
     itemCount = 0
@@ -16,6 +17,17 @@ class Item:
 
     def save(self):
         self.dbHandler.saveItem(self)
+
+    def getDictionaryRepresentation(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "value": self.value,
+            "marketId": self.market.id,
+        }
+
+    def serializeToJson(self):
+        return json.dumps(self.getDictionaryRepresentation())
 
     def setMarket(self, market):
         self.market = market

@@ -1,11 +1,13 @@
 from procurement_bytetheory.controllers.UIController import UIController
 from procurement_bytetheory.db_connectors.DatabaseHandler import DatabaseHandler
-
+import pprint as pp
+import json
 
 class MockView:
-    def update(self, message):
+    def update(self, message, payload):
         if message:
-            print(message)
+            print("message", message)
+            print("payload", payload)
         else:
             print("Updated with no message.")
 
@@ -19,14 +21,15 @@ def main():
 
     controller.createBusiness("ACME Innovations", 500)
     controller.seedMarket()
+    print(json.loads(controller.business.serializeToJson()))
     # controller.buyCheapest(itemName=None)
-    controller.buyCheapest(itemName="desk")
-    controller.buyCheapest(itemName="table")
+    # controller.buyCheapest(itemName="desk")
+    # controller.buyCheapest(itemName="table")
     # controller.buyAsManyAsPossible(itemName=None)
     # controller.buyAsManyAsPossible(itemName="desk")
     # controller.sellItem(itemName=None)
     # controller.sellItem(itemName="table")
-    controller.liquidateInventory()
+    # controller.liquidateInventory()
 
 
 if __name__ == "__main__":

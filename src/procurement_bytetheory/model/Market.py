@@ -2,7 +2,7 @@ from procurement_bytetheory.db_connectors.MarketDbHandler import MarketDbHandler
 from procurement_bytetheory.model.Item import Item
 from importlib.resources import files
 import csv
-
+import json
 
 class Market:
     numMarkets = 0
@@ -19,6 +19,16 @@ class Market:
 
     def save(self):
         self.dbHandler.saveMarket(self)
+
+    def getDictionaryRepresentation(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "items": [item.getDictionaryRepresentation() for item in self.items]
+        }
+
+    def serializeToJson(self):
+        return json.dumps(self.getDictionaryRepresentation())
 
     def seedMarket(self):
         seedItems = self.getSeedItems()

@@ -8,6 +8,6 @@ class Subject:
     def detachObserver(self, observer):
         self.observers.remove(observer)
 
-    def notifyObservers(self, message=""):
+    def notifyObservers(self, message="", payload={}):
         for observer in self.observers:
-            observer.update(message)
+            observer.update(message, payload)

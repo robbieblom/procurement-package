@@ -63,21 +63,20 @@ class Business(Subject):
             cheapestItemInMarket = self.market.getCheapestItemInMarket()
             self.buy(cheapestItemInMarket)
 
-    def buyAsManyAsPossible(self, itemName=None):
-        """Buys as many of the specified item as possible. If no itemName is given,
-        defaults to the item with the lowest price.
-        """
-        if(itemName != None and not self.market.hasItem(itemName)): return
+    def buyAsManyAsPossible(self, itemName):
+        """Buys as many of the specified item as possible."""
+        if(not bool(itemName) or not self.market.hasItem(itemName)): return
 
-        buyingCheapestOfSpecificItem = bool(itemName)
-        if buyingCheapestOfSpecificItem:
-            cheapestOfGivenItem = self.market.getCheapestItemByName(itemName)
-            if(self.canAfford(cheapestOfGivenItem)):
-                self.buy(cheapestOfGivenItem)
-                self.buyAsManyAsPossible(cheapestOfGivenItem.name)
-        else:
-            itemToBuy = self.market.getCheapestItemInMarket()
-            self.buyAsManyAsPossible(itemToBuy.name)
+        cheapestOfGivenItem = self.market.getCheapestItemByName(itemName)
+        if(self.canAfford(cheapestOfGivenItem)):
+            self.buy(cheapestOfGivenItem)
+            self.buyAsManyAsPossible(cheapestOfGivenItem.name)
+
+    def buyAsManyAsPossible(self):
+        itemToBuy = self.market.getCheapestItemInMarket()
+        if( self.canAfford(itemToBuy) ):
+            self.buy(itemToBuy)
+            self.buyAsManyAsPossible()
 
     def payPriceOfItem(self, price):
         self.moneyAmount = self.moneyAmount - price

@@ -41,7 +41,9 @@ class Business(Subject):
                 "volumeSold": self.getVolumeSold(),
                 "volumePurchased": self.getVolumePurchased(),
                 "numberSold": self.getNumberSold(),
-                "numberPurchased": self.getNumberPurchased()
+                "numberPurchased": self.getNumberPurchased(),
+                "avgSalePrice": self.getAverageSalePrice(),
+                "avgPurchasePrice": self.getAveragePurchasePrice(),
             }
         }
 

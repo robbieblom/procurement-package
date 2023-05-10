@@ -40,7 +40,10 @@ class UIController(Observer):
         self.business.notifyObservers("Cheapest item bought", self.business.serializeToJson())
 
     def buyAsManyAsPossible(self, itemName=None):
-        self.business.buyAsManyAsPossible(itemName)
+        if(itemName):
+            self.business.buyAsManyAsPossible(itemName)
+        else:
+            self.business.buyAsManyAsPossible()
         self.business.save()
         self.business.notifyObservers("Bought as many as possible", self.business.serializeToJson())
 

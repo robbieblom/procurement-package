@@ -19,12 +19,21 @@ class Item:
         self.dbHandler.saveItem(self)
 
     def getDictionaryRepresentation(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "value": self.value,
-            "marketId": self.market.id,
-        }
+        try :
+            return {
+                "id": self.id,
+                "name": self.name,
+                "value": self.value,
+                "marketId": self.market.id,
+            }
+        except: 
+            return {
+                "id": self.id,
+                "name": self.name,
+                "value": self.value,
+                "marketId": None,
+            }
+        
 
     def serializeToJson(self):
         return json.dumps(self.getDictionaryRepresentation())

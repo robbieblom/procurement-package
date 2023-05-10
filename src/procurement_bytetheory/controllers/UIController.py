@@ -28,6 +28,11 @@ class UIController(Observer):
         self.business.market.save()
         self.business.notifyObservers("Market seeded", self.business.serializeToJson())
 
+    def buyItemById(self, id):
+        self.business.buyItemById(id)
+        # self.business.save()
+        # self.business.notifyObservers("Item bought", self.business.serializeToJson())
+
     def buyCheapest(self, itemName=None):
         self.business.buyCheapest(itemName)
         self.business.save()

@@ -1,9 +1,14 @@
 from procurement_bytetheory.db_connectors.DatabaseHandler import DatabaseHandler
+# from procurement_bytetheory.model.Item import Item
+# from procurement_bytetheory.db_connectors.InventoryDbHandler import InventoryDbHandler
+# from procurement_bytetheory.db_connectors.MarketDbHandler import MarketDbHandler
 
 class ItemDbHandler(DatabaseHandler):
 
     def __init__(self):
         super().__init__()
+        # self.inventoryDbHandler = InventoryDbHandler()
+        # self.marketDbHandler = MarketDbHandler()
 
     def saveItem(self, item):
         # Note: temp table not needed because we're just upserting
@@ -63,3 +68,27 @@ class ItemDbHandler(DatabaseHandler):
         for item in items:
             self.upsertItem(item)
     
+    def getItemById(self, id):
+        curs = self.db.cursor()
+        try:
+            curs.execute(
+                """
+                SELECT id, name, value, market_id, inventory_id
+                FROM Item
+                WHERE id = {}
+                """.format(
+                    id
+                )
+            )
+            dbResponse = curs.fetchall()
+            curs.close()
+            return self.deserializeToObject(dbResponse[0])
+        except Exception as e:
+            print(e)
+            raise Exception("No business with id {} exists", id)
+
+    def deserializeToObject(self, dbRecord):
+        (id, name, value, market_id, inventory_id) = dbRecord
+        # market = self.marketDbHandler.getMarketById(market_id)
+        # inventory = self.inventoryDbHandler.getInventoryById(inventory_id)
+        # return Item(name, value, id=id, market=market, inventory=inventory)

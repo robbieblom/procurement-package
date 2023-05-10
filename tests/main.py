@@ -21,8 +21,8 @@ def main():
 
     controller.createBusiness("ACME Innovations", 500)
     controller.seedMarket()
-    print(json.loads(controller.business.serializeToJson()))
-    # controller.buyCheapest(itemName=None)
+    # controller.buyItemById(1)
+    controller.buyCheapest(itemName=None)
     # controller.buyCheapest(itemName="desk")
     # controller.buyCheapest(itemName="table")
     # controller.buyAsManyAsPossible(itemName=None)

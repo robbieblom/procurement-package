@@ -16,7 +16,6 @@ packaging==23.1
 pfzy==0.3.4
 pkginfo==1.9.6
 pluggy==1.0.0
--e git+https://github.com/robbieblom/procurement-package.git@040778ed769008d4cc71a5f8b9582c6db477cb60#egg=procurement_bytetheory
 prompt-toolkit==3.0.38
 Pygments==2.15.1
 pyproject_hooks==1.0.0

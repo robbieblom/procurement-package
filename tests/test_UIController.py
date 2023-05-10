@@ -27,3 +27,21 @@ class TestUIController:
         initialMoneyAmount = seededController.business.moneyAmount
         seededController.buyItemById(100)
         assert seededController.business.moneyAmount == initialMoneyAmount - newItem.getPurchasePrice()
+
+    def test_sellItemById_itemRemovedFromInventory(self, seededController):
+        newItem = Item("test_item", 100, id=100)
+        seededController.business.inventory.addItem(newItem)
+        seededController.business.inventory.save()
+
+        seededController.sellItemById(100)
+        assert newItem not in seededController.business.inventory.items
+
+    def test_sellItemById_businessMoneyAmountDecreases(self, seededController):
+        newItem = Item("test_item", 100, id=100)
+        seededController.business.inventory.addItem(newItem)
+        seededController.business.inventory.save()
+        seededController.business.save()
+
+        initialMoneyAmount = seededController.business.moneyAmount
+        seededController.sellItemById(100)
+        assert seededController.business.moneyAmount == initialMoneyAmount + newItem.getSalesPrice() 

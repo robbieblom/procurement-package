@@ -44,6 +44,12 @@ class UIController(Observer):
         self.business.save()
         self.business.notifyObservers("Bought as many as possible", self.business.serializeToJson())
 
+    def sellItemById(self, id):
+        item = Item.getItemById(id)
+        self.business.executeSale(item)
+        self.business.save()
+        self.business.notifyObservers("Item sold", self.business.serializeToJson())
+
     def sellItem(self, itemName=None):
         self.business.sellItem(itemName)
         self.business.save()

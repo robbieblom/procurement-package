@@ -138,14 +138,14 @@ class Business(Subject):
         return self.moneyAmount + self.inventory.getWorth()
 
     def getMargin(self):
-        if(self.volumePurchased == 0): return None
+        if(self.volumePurchased == 0 or self.volumeSold == 0): return None
         return round((self.volumeSold - self.volumePurchased)*100 / self.volumePurchased, 2)
 
     def getVolumeSold(self):
-        return self.volumeSold
+        return round(self.volumeSold,2)
 
     def getVolumePurchased(self):
-        return self.volumePurchased
+        return round(self.volumePurchased, 2)
 
     def getNumberSold(self):
         return self.numberSold

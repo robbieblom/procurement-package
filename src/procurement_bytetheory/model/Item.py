@@ -36,6 +36,10 @@ class Item:
                 "name": self.name,
                 "value": self.value,
                 "marketId": self.marketId,
+                "metrics": {
+                    "salesPrice": self.getSalesPrice(),
+                    "purchasePrice": self.getPurchasePrice(),
+                }
             }
         except: 
             return {
@@ -55,13 +59,13 @@ class Item:
         self.inventoryId = inventoryId
 
     def getPurchasePrice(self):
-        return .95*self.value
+        return round(.95*self.value, 2)
 
     def getSalesPrice(self):
-        return 1.05*self.value
+        return round(1.05*self.value, 2)
 
     def getFireSalePrice(self):
-        return .8*self.value
+        return round(.8*self.value, 2)
 
     def __eq__(self, other):
         return True if self.id == other.id else False

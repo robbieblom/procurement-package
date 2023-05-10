@@ -24,6 +24,7 @@ class Business(Subject):
         self.volumePurchased = 0
         self.numberSold = 0
         self.numberPurchased = 0 
+        self.salesBasis = 0
 
     def save(self):
         self.dbHandler.saveBusiness(self)
@@ -132,6 +133,7 @@ class Business(Subject):
         self.collectPaymentFromMarketCustomer(item.getSalesPrice())
         self.removeItemFromInventory(item)
         self.volumeSold += item.getSalesPrice()
+        self.salesBasis += item.getPurchasePrice()
         self.numberSold += 1
 
     def getNetWorth(self):
@@ -139,7 +141,7 @@ class Business(Subject):
 
     def getMargin(self):
         if(self.volumePurchased == 0 or self.volumeSold == 0): return None
-        return round((self.volumeSold - self.volumePurchased)*100 / self.volumePurchased, 2)
+        return round( ( (self.volumeSold / self.salesBasis) - 1 ) * 100, 2)
 
     def getVolumeSold(self):
         return round(self.volumeSold,2)

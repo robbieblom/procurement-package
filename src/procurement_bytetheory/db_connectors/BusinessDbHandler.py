@@ -21,7 +21,7 @@ class BusinessDbHandler(DatabaseHandler):
                 """
                 INSERT INTO Business
                 VALUES ({id}, '{name}', {money_amount}, {marketId}, {inventoryId});
-                """.format(id=business.id, name=business.name, money_amount=business.money_amount, marketId=business.market.id if business.market else -1, inventoryId=business.inventory.id if business.inventory else -1)
+                """.format(id=business.id, name=business.name, money_amount=business.moneyAmount, marketId=business.market.id if business.market else -1, inventoryId=business.inventory.id if business.inventory else -1)
             )
             print('New business inserted.')
         except Exception as e:
@@ -32,7 +32,7 @@ class BusinessDbHandler(DatabaseHandler):
                 UPDATE Business
                 SET id={id}, name='{name}', money_amount={money_amount}, market_id={marketId}, inventory_id={inventoryId}
                 WHERE id={id};
-                """.format(id=business.id, name=business.name, money_amount=business.money_amount, marketId=business.market.id, inventoryId=business.inventory.id)
+                """.format(id=business.id, name=business.name, money_amount=business.moneyAmount, marketId=business.market.id, inventoryId=business.inventory.id)
             )
             print('Business updated')
         self.db.commit()

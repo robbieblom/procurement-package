@@ -7,11 +7,11 @@ import json
 class Business(Subject):
     numBusinesses = 0
 
-    def __init__(self, name, money_amount=400, id=None, inventory=None, market=None, dbHandler=None):
+    def __init__(self, name, moneyAmount=400, id=None, inventory=None, market=None, dbHandler=None):
         super().__init__()
 
         self.name = name
-        self.money_amount = money_amount
+        self.moneyAmount = moneyAmount
 
         self.id = id if id else Business.numBusinesses + 1
         Business.numBusinesses += 1
@@ -27,7 +27,7 @@ class Business(Subject):
         return {
             "id": self.id,
             "name": self.name,
-            "moneyAmount": self.money_amount,
+            "moneyAmount": self.moneyAmount,
             "inventory": self.inventory.getDictionaryRepresentation(),
             "market": self.market.getDictionaryRepresentation()
         }
@@ -64,13 +64,13 @@ class Business(Subject):
             self.buyAsManyAsPossible(itemToBuy.name)
 
     def payPriceOfItem(self, price):
-        self.money_amount = self.money_amount - price
+        self.moneyAmount = self.moneyAmount - price
 
     def addItemToInventory(self, item):
         self.inventory.addItem(item)
 
     def canAfford(self, item):
-        if self.money_amount > item.getPurchasePrice():
+        if self.moneyAmount > item.getPurchasePrice():
             return True
         return False
 
@@ -102,7 +102,7 @@ class Business(Subject):
         self.clearInventory()
 
     def collectPaymentFromMarketCustomer(self, salesPrice):
-        self.money_amount += salesPrice
+        self.moneyAmount += salesPrice
 
     def removeItemFromInventory(self, item):
         self.inventory.removeItem(item)
@@ -115,4 +115,4 @@ class Business(Subject):
         self.removeItemFromInventory(item)
 
     def getNetWorth(self):
-        return self.money_amount + self.inventory.getValue()
+        return self.moneyAmount + self.inventory.getValue()

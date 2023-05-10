@@ -28,7 +28,7 @@ class Inventory:
 
     def addItem(self, item):
         self.items.append(item)
-        item.setInventory(self)
+        item.setInventory(self.id)
 
     def removeItem(self, item):
         self.items.remove(item)

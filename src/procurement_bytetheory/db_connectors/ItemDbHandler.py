@@ -1,14 +1,8 @@
 from procurement_bytetheory.db_connectors.DatabaseHandler import DatabaseHandler
-# from procurement_bytetheory.model.Item import Item
-# from procurement_bytetheory.db_connectors.InventoryDbHandler import InventoryDbHandler
-# from procurement_bytetheory.db_connectors.MarketDbHandler import MarketDbHandler
-
 class ItemDbHandler(DatabaseHandler):
 
     def __init__(self):
         super().__init__()
-        # self.inventoryDbHandler = InventoryDbHandler()
-        # self.marketDbHandler = MarketDbHandler()
 
     def saveItem(self, item):
         # Note: temp table not needed because we're just upserting
@@ -32,7 +26,7 @@ class ItemDbHandler(DatabaseHandler):
                 """
                 INSERT INTO Temp_Item
                 VALUES ({id}, '{name}', {value}, {marketId}, {inventoryId})
-                """.format(id=item.id, name=item.name, value=item.value, marketId=item.market.id if item.market else -1, inventoryId=item.inventory.id if item.inventory else -1)
+                """.format(id=item.id, name=item.name, value=item.value, marketId=item.marketId if item.marketId else -1, inventoryId=item.inventoryId if item.inventoryId else -1)
             )
             print('New item inserted into temp table.')
         
@@ -47,7 +41,7 @@ class ItemDbHandler(DatabaseHandler):
                 """
                 INSERT INTO Item
                 VALUES ({id}, '{name}', {value}, {marketId}, {inventoryId})
-                """.format(id=item.id, name=item.name, value=item.value, marketId=item.market.id if item.market else -1, inventoryId=item.inventory.id if item.inventory else -1)
+                """.format(id=item.id, name=item.name, value=item.value, marketId=item.marketId if item.marketId else -1, inventoryId=item.inventoryId if item.inventoryId else -1)
             )
             print('New item inserted.')
         except Exception as e:
@@ -58,7 +52,7 @@ class ItemDbHandler(DatabaseHandler):
                 UPDATE Item
                 SET id={id}, name='{name}', value={value}, market_id={marketId}, inventory_id={inventoryId}
                 WHERE id={id};
-                """.format(id=item.id, name=item.name, value=item.value, marketId=item.market.id if item.market else -1, inventoryId=item.inventory.id if item.inventory else -1)
+                """.format(id=item.id, name=item.name, value=item.value, marketId=item.marketId if item.marketId else -1, inventoryId=item.inventoryId if item.inventoryId else -1)
             )
             print('Item updated')
         self.db.commit()
@@ -82,13 +76,7 @@ class ItemDbHandler(DatabaseHandler):
             )
             dbResponse = curs.fetchall()
             curs.close()
-            return self.deserializeToObject(dbResponse[0])
+            return dbResponse[0]
         except Exception as e:
             print(e)
             raise Exception("No business with id {} exists", id)
-
-    def deserializeToObject(self, dbRecord):
-        (id, name, value, market_id, inventory_id) = dbRecord
-        # market = self.marketDbHandler.getMarketById(market_id)
-        # inventory = self.inventoryDbHandler.getInventoryById(inventory_id)
-        # return Item(name, value, id=id, market=market, inventory=inventory)

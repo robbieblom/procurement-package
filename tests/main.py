@@ -21,8 +21,8 @@ def main():
 
     controller.createBusiness("ACME Innovations", 500)
     controller.seedMarket()
-    # controller.buyItemById(1)
-    controller.buyCheapest(itemName=None)
+    controller.buyItemById(1)
+    # controller.buyCheapest(itemName=None)
     # controller.buyCheapest(itemName="desk")
     # controller.buyCheapest(itemName="table")
     # controller.buyAsManyAsPossible(itemName=None)

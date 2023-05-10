@@ -4,19 +4,30 @@ import json
 class Item:
     itemCount = 0
 
-    def __init__(self, name, value, id=None, market=None, inventory=None, dbHandler=None):
+    def __init__(self, name, value, id=None, marketId=None, inventoryId=None, dbHandler=None):
         self.name = name
         self.value = value
 
         self.id = id if id else Item.itemCount + 1
         Item.itemCount += 1
         
-        self.market = market
-        self.inventory = inventory
+        self.marketId = marketId
+        self.inventoryId = inventoryId
         self.dbHandler = dbHandler if dbHandler else ItemDbHandler()
 
     def save(self):
         self.dbHandler.saveItem(self)
+
+    @staticmethod
+    def getItemById(id):
+        dbHandler = ItemDbHandler()
+        dbRecord = dbHandler.getItemById(id)
+        return Item.deserializeToObject(dbRecord)
+
+    @staticmethod
+    def deserializeToObject(dbRecord):
+        (id, name, value, market_id, inventory_id) = dbRecord
+        return Item(name, value, id=id, marketId=market_id, inventoryId=inventory_id)
 
     def getDictionaryRepresentation(self):
         try :
@@ -24,7 +35,7 @@ class Item:
                 "id": self.id,
                 "name": self.name,
                 "value": self.value,
-                "marketId": self.market.id,
+                "marketId": self.marketId,
             }
         except: 
             return {
@@ -34,15 +45,14 @@ class Item:
                 "marketId": None,
             }
         
-
     def serializeToJson(self):
         return json.dumps(self.getDictionaryRepresentation())
 
-    def setMarket(self, market):
-        self.market = market
+    def setMarket(self, marketId):
+        self.marketId = marketId
 
-    def setInventory(self, inventory):
-        self.inventory = inventory
+    def setInventory(self, inventoryId):
+        self.inventoryId = inventoryId
 
     def getPurchasePrice(self):
         return .95*self.value

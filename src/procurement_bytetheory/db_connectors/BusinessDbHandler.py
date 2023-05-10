@@ -1,14 +1,12 @@
 from procurement_bytetheory.db_connectors.DatabaseHandler import DatabaseHandler
 from procurement_bytetheory.db_connectors.MarketDbHandler import MarketDbHandler
 from procurement_bytetheory.db_connectors.InventoryDbHandler import InventoryDbHandler
-# from procurement_bytetheory.db_connectors.ItemDbHandler import ItemDbHandler
 class BusinessDbHandler(DatabaseHandler):
 
     def __init__(self):
         super().__init__()
         self.marketDbHandler = MarketDbHandler()
         self.inventoryDbHandler = InventoryDbHandler()
-        # self.itemDbHandler = ItemDbHandler()
 
     def saveBusiness(self, business):
         self.saveBusinessRecord(business)
@@ -58,6 +56,3 @@ class BusinessDbHandler(DatabaseHandler):
         except Exception as e:
             print(e)
             raise Exception("No business with id {} exists", id)
-
-    def getItemById(self, id):
-        return self.itemDbHandler.getItemById(id)

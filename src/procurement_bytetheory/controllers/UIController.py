@@ -1,6 +1,6 @@
 from procurement_bytetheory.controllers.Observer import Observer
 from procurement_bytetheory.model.Business import Business
-
+from procurement_bytetheory.model.Item import Item
 class UIController(Observer):
     def __init__(self):
         super().__init__()
@@ -29,9 +29,11 @@ class UIController(Observer):
         self.business.notifyObservers("Market seeded", self.business.serializeToJson())
 
     def buyItemById(self, id):
-        self.business.buyItemById(id)
-        # self.business.save()
-        # self.business.notifyObservers("Item bought", self.business.serializeToJson())
+        item = Item.getItemById(id)
+        # print(item.serializeToJson())
+        self.business.buy(item)
+        self.business.save()
+        self.business.notifyObservers("Item bought", self.business.serializeToJson())
 
     def buyCheapest(self, itemName=None):
         self.business.buyCheapest(itemName)

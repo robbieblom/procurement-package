@@ -35,10 +35,6 @@ class Business(Subject):
     def serializeToJson(self):
         return json.dumps(self.getDictionaryRepresentation())
 
-    def buyItemById(self, id):
-        item = self.dbHandler.getItemById(id)
-        # self.buy(item)
-
     def buyCheapest(self, itemName=None):
         """Buys the cheapest item with the specified itemName, and if no itemName is specified,
         buys one of the cheapest items in the market.

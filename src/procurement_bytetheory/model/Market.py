@@ -50,7 +50,7 @@ class Market:
     
     def addItemToMarket(self, item):
         self.items.append(item)
-        item.setMarket(self)
+        item.setMarket(self.id)
 
     def removeItemFromMarket(self, item):
         self.items.remove(item)

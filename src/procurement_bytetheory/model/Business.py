@@ -135,7 +135,7 @@ class Business(Subject):
         self.numberSold += 1
 
     def getNetWorth(self):
-        return self.moneyAmount + self.inventory.getWorth()
+        return round(self.moneyAmount + self.inventory.getWorth(), 2)
 
     def getMargin(self):
         if(self.volumePurchased == 0 or self.volumeSold == 0): return None

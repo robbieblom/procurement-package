@@ -115,4 +115,4 @@ class Business(Subject):
         self.removeItemFromInventory(item)
 
     def getNetWorth(self):
-        return self.moneyAmount + self.inventory.getValue()
+        return self.moneyAmount + self.inventory.getWorth()

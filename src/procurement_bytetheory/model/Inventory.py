@@ -51,5 +51,5 @@ class Inventory:
         else:
             return max(self.items)
 
-    def getValue(self):
-        return sum([item.value for item in self.items])
+    def getWorth(self):
+        return sum([item.getSalesPrice() for item in self.items])

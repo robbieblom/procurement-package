@@ -6,6 +6,9 @@ include env.mk
 run: $(VENV)/bin/activate
 	$(PYTHON) tests/main.py
 
+test: $(VENV)/bin/activate
+	pytest
+
 venv/bin/activate: requirements.txt
 	rm -rf venv/
 	python3 -m venv venv

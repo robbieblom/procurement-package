@@ -47,7 +47,7 @@ class Market:
     def addItemsToMarket(self, items):
         for item in items:
             self.addItemToMarket(item)
-    
+
     def addItemToMarket(self, item):
         self.items.append(item)
         item.setMarket(self.id)

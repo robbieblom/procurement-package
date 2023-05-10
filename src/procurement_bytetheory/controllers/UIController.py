@@ -30,7 +30,6 @@ class UIController(Observer):
 
     def buyItemById(self, id):
         item = Item.getItemById(id)
-        # print(item.serializeToJson())
         self.business.buy(item)
         self.business.save()
         self.business.notifyObservers("Item bought", self.business.serializeToJson())

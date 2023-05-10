@@ -1,7 +1,5 @@
 from procurement_bytetheory.controllers.UIController import UIController
 from procurement_bytetheory.db_connectors.DatabaseHandler import DatabaseHandler
-import pprint as pp
-import json
 
 class MockView:
     def update(self, message, payload):

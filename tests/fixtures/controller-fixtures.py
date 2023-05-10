@@ -6,7 +6,7 @@ class MockView:
     def update(self, message, payload):
         if message:
             print("message", message)
-            print("payload", payload)
+            # print("payload", payload)
         else:
             print("Updated with no message.")
             

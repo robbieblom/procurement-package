@@ -118,6 +118,9 @@ class Business(Subject):
     def liquidateInventory(self):
         for item in self.inventory.items:
             self.collectPaymentFromMarketCustomer(item.getFireSalePrice())
+            self.volumeSold += item.getFireSalePrice()
+            self.salesBasis += item.getPurchasePrice()
+            self.numberSold += 1
         self.clearInventory()
 
     def collectPaymentFromMarketCustomer(self, salesPrice):

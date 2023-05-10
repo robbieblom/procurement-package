@@ -22,10 +22,10 @@ def main():
     # controller.buyItemById(1)
     # controller.buyCheapest(itemName=None)
     # controller.buyCheapest(itemName="desk")
-    # controller.buyCheapest(itemName="table")
+    controller.buyCheapest(itemName="table")
     # controller.buyAsManyAsPossible(itemName=None)
     # controller.buyAsManyAsPossible(itemName="desk")
-    # controller.sellItem(itemName=None)
+    controller.sellItem(itemName=None)
     # controller.sellItem(itemName="table")
     # controller.liquidateInventory()
 

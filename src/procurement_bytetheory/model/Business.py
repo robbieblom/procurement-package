@@ -20,6 +20,11 @@ class Business(Subject):
         self.market = market if market else Market("USA")
         self.dbHandler = dbHandler if dbHandler else BusinessDbHandler()
 
+        self.volumeSold = 0
+        self.volumePurchased = 0
+        self.numberSold = 0
+        self.numberPurchased = 0 
+
     def save(self):
         self.dbHandler.saveBusiness(self)
     
@@ -29,7 +34,15 @@ class Business(Subject):
             "name": self.name,
             "moneyAmount": self.moneyAmount,
             "inventory": self.inventory.getDictionaryRepresentation(),
-            "market": self.market.getDictionaryRepresentation()
+            "market": self.market.getDictionaryRepresentation(),
+            "metrics": {
+                "netWorth": self.getNetWorth(),
+                "margin": self.getMargin(),
+                "volumeSold": self.getVolumeSold(),
+                "volumePurchased": self.getVolumePurchased(),
+                "numberSold": self.getNumberSold(),
+                "numberPurchased": self.getNumberPurchased()
+            }
         }
 
     def serializeToJson(self):
@@ -79,6 +92,9 @@ class Business(Subject):
             self.market.removeItemFromMarket(item)
             self.payPriceOfItem(item.getPurchasePrice())
             self.addItemToInventory(item)
+
+            self.volumePurchased += item.getPurchasePrice()
+            self.numberPurchased += 1
         else:
             raise Exception("You don't have enough money to buy this!")
 
@@ -113,6 +129,32 @@ class Business(Subject):
     def executeSale(self, item):
         self.collectPaymentFromMarketCustomer(item.getSalesPrice())
         self.removeItemFromInventory(item)
+        self.volumeSold += item.getSalesPrice()
+        self.numberSold += 1
 
     def getNetWorth(self):
         return self.moneyAmount + self.inventory.getWorth()
+
+    def getMargin(self):
+        if(self.volumePurchased == 0): return None
+        return round((self.volumeSold - self.volumePurchased)*100 / self.volumePurchased, 2)
+
+    def getVolumeSold(self):
+        return self.volumeSold
+
+    def getVolumePurchased(self):
+        return self.volumePurchased
+
+    def getNumberSold(self):
+        return self.numberSold
+
+    def getNumberPurchased(self):
+        return self.numberPurchased
+
+    def getAverageSalePrice(self):
+        if(self.numberSold == 0): return None
+        return round(self.volumeSold / self.numberSold, 2)
+
+    def getAveragePurchasePrice(self):
+        if(self.numberPurchased == 0): return None
+        return round(self.volumePurchased / self.numberPurchased, 2)

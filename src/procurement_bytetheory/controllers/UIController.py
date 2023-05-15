@@ -1,6 +1,8 @@
 from procurement_bytetheory.controllers.Observer import Observer
 from procurement_bytetheory.model.Business import Business
 from procurement_bytetheory.model.Item import Item
+
+
 class UIController(Observer):
     def __init__(self):
         super().__init__()
@@ -37,15 +39,19 @@ class UIController(Observer):
     def buyCheapest(self, itemName=None):
         self.business.buyCheapest(itemName)
         self.business.save()
-        self.business.notifyObservers("Cheapest item bought", self.business.serializeToJson())
+        self.business.notifyObservers(
+            "Cheapest item bought", self.business.serializeToJson()
+        )
 
     def buyAsManyAsPossible(self, itemName=None):
-        if(itemName):
+        if itemName:
             self.business.buyAsManyAsPossible(itemName)
         else:
             self.business.buyAsManyAsPossible()
         self.business.save()
-        self.business.notifyObservers("Bought as many as possible", self.business.serializeToJson())
+        self.business.notifyObservers(
+            "Bought as many as possible", self.business.serializeToJson()
+        )
 
     def sellItemById(self, id):
         item = Item.getItemById(id)
@@ -61,7 +67,9 @@ class UIController(Observer):
     def liquidateInventory(self):
         self.business.liquidateInventory()
         self.business.save()
-        self.business.notifyObservers("Liquidated inventory", self.business.serializeToJson())
-    
+        self.business.notifyObservers(
+            "Liquidated inventory", self.business.serializeToJson()
+        )
+
     def getNetWorth(self):
         return self.business.getNetWorth()

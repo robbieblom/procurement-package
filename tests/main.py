@@ -1,6 +1,7 @@
 from procurement_bytetheory.controllers.UIController import UIController
 from procurement_bytetheory.db_connectors.DatabaseHandler import DatabaseHandler
 
+
 class MockView:
     def update(self, message, payload):
         if message:
@@ -22,10 +23,11 @@ def main():
     # controller.buyItemById(1)
     # controller.buyCheapest(itemName=None)
     # controller.buyCheapest(itemName="desk")
-    controller.buyCheapest(itemName="table")
+    # controller.buyCheapest(itemName="table")
     # controller.buyAsManyAsPossible(itemName=None)
     # controller.buyAsManyAsPossible(itemName="desk")
-    controller.sellItem(itemName=None)
+    controller.buyAsManyAsPossible()
+    # controller.sellItem(itemName=None)
     # controller.sellItem(itemName="table")
     # controller.liquidateInventory()
 

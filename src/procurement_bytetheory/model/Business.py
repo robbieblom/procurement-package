@@ -96,7 +96,7 @@ class Business(Subject):
         itemToBuy = self.market.getCheapestItemInMarket()
         if self.canAfford(itemToBuy):
             self.buy(itemToBuy)
-            self.buyAsManyAsPossible()
+            self.buyAsManyAsPossible(numBought=numBought + 1)
         else:
             if numBought == 0:
                 raise InsufficientFundsError(

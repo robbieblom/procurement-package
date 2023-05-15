@@ -1,5 +1,6 @@
 from procurement_bytetheory.db_connectors.ItemDbHandler import ItemDbHandler
 import json
+import random
 
 class Item:
     itemCount = 0
@@ -59,13 +60,19 @@ class Item:
         self.inventoryId = inventoryId
 
     def getPurchasePrice(self):
-        return round(.95*self.value, 2)
+        purchasePriceFactor = self.getRandomFromRange(.92, .98)
+        return round(purchasePriceFactor*self.value, 2)
 
     def getSalesPrice(self):
-        return round(1.05*self.value, 2)
+        salesPriceFactor = self.getRandomFromRange(1.02, 1.08)
+        return round(salesPriceFactor*self.value, 2)
 
     def getFireSalePrice(self):
-        return round(.8*self.value, 2)
+        return round(.85*self.value, 2)
+
+    def getRandomFromRange(self, lowerBound, upperBound):
+        randFactor = random.random()
+        return randFactor*(upperBound - lowerBound) + lowerBound
 
     def __eq__(self, other):
         return True if self.id == other.id else False

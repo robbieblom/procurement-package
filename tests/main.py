@@ -29,7 +29,7 @@ def main():
     controller.buyAsManyAsPossible()
     # controller.sellItem(itemName=None)
     # controller.sellItem(itemName="table")
-    # controller.liquidateInventory()
+    controller.liquidateInventory()
 
 
 if __name__ == "__main__":
